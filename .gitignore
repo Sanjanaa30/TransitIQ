@@ -1,0 +1,30 @@
+# Local Python environment and caches
+.venv/
+.cache/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Website dependencies and build output
+node_modules/
+web/dist/
+
+# Secrets and local settings
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Bulk or generated data
+data/raw/
+data/silver/
+data/gold/
+outputs/
+*.log
+
+# Personal planning reference files
+TransitIQ_Complete_Project_Reference.pdf
+TransitIQ Proposal Report.docx
