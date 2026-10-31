@@ -9,23 +9,39 @@ Ask TransitIQ AI Assistant.
 
 ## Project status
 
-Project foundations are in progress. Data pipelines and the website
-will be added in later phases.
+**Level 1 foundations are documented; the Phase 4 design review awaits
+your confirmation.**
 
-## Scope and decisions
+- **Phases 0–2:** Agreed on scope, $0 intended personal spending, and an
+  E: workspace; checked the laptop and set up the local environment and Git.
+- **Phase 3:** Listed sources by tab and checked small samples. The monthly
+  starter has 2019–August 2026 rows for all four services. Other checks
+  covered daily/hourly ridership, alerts, reliability, LIRR occupancy,
+  selected fares, and station/branch references.
+- **Phase 4:** Documented row meanings, relationships, metric formulas,
+  missing/estimated values, and Bronze/Silver/Gold roles. The final review
+  marks features that still need evidence as conditional or unsupported.
 
-- [Project scope](docs/scope.md)
-- [Decision log](docs/decisions.md)
+These are design and sample checks. Full-data pipeline validation and the
+dashboard have not been built yet.
+
+## Level 1 project documents
+
+- [Confirmed scope and decisions](docs/Level_1_Project_foundations/01_scope_and_decisions.md)
+- [Data sources and feature plan by tab](docs/Level_1_Project_foundations/02_data_sources_by_tab.md)
+- [Phase 4 metrics and data model](docs/Level_1_Project_foundations/03_metrics_and_data_model.md)
+- [Phase 4 final review](docs/Level_1_Project_foundations/04_phase4_final_review.md)
 
 ## Planned data flow
 
 Official public MTA data -> ingestion and validation -> Azure Data Lake
-Storage Gen2 -> processing and documented metrics -> Azure SQL Database
+Storage Gen2 -> processing and documented metrics -> Azure SQL Database (if eligible)
 -> prepared website files -> GitHub Pages.
 
 Azure Data Factory will coordinate an initial small workflow. Azure
-Databricks, forecasting, and the AI assistant are later phases, subject
-to the project checks described in the scope.
+SQL and Azure Data Factory require account/eligibility and cost checks
+before use. Azure Databricks, forecasting, and the AI assistant are later
+phases, subject to the project checks described in the scope.
 
 ## Folders
 
@@ -54,7 +70,9 @@ $env:TMP = 'E:\TransitIQ\.cache\tmp'
 
 ## Data sources
 
-We will choose and document the first official MTA dataset in Phase 3.
+The first verified source is MTA Monthly Ridership / Traffic Data. Its
+2019–August 2026 snapshot has been checked for four rail services. See the
+Level 1 source list for links, intended uses, and remaining checks.
 
 ## Run the project
 
