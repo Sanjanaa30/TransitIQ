@@ -24,6 +24,7 @@ data/silver/
 data/gold/
 outputs/
 *.log
+data/samples/adls_smoke_test.txt
 
 # Personal planning reference files
 TransitIQ_Complete_Project_Reference.pdf

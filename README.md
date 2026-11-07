@@ -9,8 +9,8 @@ Ask TransitIQ AI Assistant.
 
 ## Project status
 
-**Level 1 foundations are documented; the Phase 4 design review awaits
-your confirmation.**
+**Level 1 foundations and the first Azure ingestion exercises are complete.
+Phase 8's parameterized ADF copy landed a checked 20-row sample in ADLS.**
 
 - **Phases 0–2:** Agreed on scope, $0 intended personal spending, and an
   E: workspace; checked the laptop and set up the local environment and Git.
@@ -22,8 +22,17 @@ your confirmation.**
   missing/estimated values, and Bronze/Silver/Gold roles. The final review
   marks features that still need evidence as conditional or unsupported.
 
-These are design and sample checks. Full-data pipeline validation and the
-dashboard have not been built yet.
+These are design and sample checks. Full historical pipeline validation and
+the dashboard have not been built yet.
+
+- **Phase 5:** Verified Azure for Students credit, an allowed region, a budget alert,
+  Data Factory V2 availability, and the Azure SQL free-tier offer.
+- **Phase 6:** Created the private ADLS Gen2 storage layout and verified an
+  identity-based upload and read of a tiny test file.
+- **Phase 7:** Built a bounded Python fetch with validation, a source-update
+  timestamp, a manifest, and an idempotent ADLS Bronze upload.
+- **Phase 8:** Built a manual ADF HTTP-to-ADLS Copy pipeline. A parameterized
+  January-May 2019 run succeeded, and all 20 source rows were verified in ADLS.
 
 ## Level 1 project documents
 
@@ -32,15 +41,21 @@ dashboard have not been built yet.
 - [Phase 4 metrics and data model](docs/Level_1_Project_foundations/03_metrics_and_data_model.md)
 - [Phase 4 final review](docs/Level_1_Project_foundations/04_phase4_final_review.md)
 
+## Level 2 project documents
+
+- [Level 2 Azure ingestion learning guide](docs/Level_2_Azure_ingestion/README.md)
+- [ADLS layout and operating rules](docs/Level_2_Azure_ingestion/06_adls_layout.md)
+- [First ADF pipeline and verified result](docs/Level_2_Azure_ingestion/08_adf_first_pipeline.md)
+
 ## Planned data flow
 
 Official public MTA data -> ingestion and validation -> Azure Data Lake
 Storage Gen2 -> processing and documented metrics -> Azure SQL Database (if eligible)
 -> prepared website files -> GitHub Pages.
 
-Azure Data Factory will coordinate an initial small workflow. Azure
-SQL and Azure Data Factory require account/eligibility and cost checks
-before use. Azure Databricks, forecasting, and the AI assistant are later
+Azure Data Factory has completed a small manual ingestion exercise. Azure SQL
+still requires creation under the verified free offer. Azure Databricks,
+forecasting, and the AI assistant are later
 phases, subject to the project checks described in the scope.
 
 ## Folders
@@ -76,7 +91,51 @@ Level 1 source list for links, intended uses, and remaining checks.
 
 ## Run the project
 
-We will add run instructions as we build the data pipeline and website.
+The first Phase 7 ingestion fetches January through May 2019 monthly estimates
+for Subway, SIR, LIRR, and Metro-North. It uses only the Python standard
+library, validates 20 service-month rows, and writes the original API response
+and a run manifest under `data/raw/` on E:. The manifest records the publisher's
+row update time separately from our retrieval time.
+
+```powershell
+& 'E:\TransitIQ\.venv\Scripts\python.exe' 'E:\TransitIQ\src\transitiq\ingestion\monthly_ridership.py' --start-month 2019-01 --end-month 2019-05
+```
+
+Add `--upload` to fetch and upload the new run in one command:
+
+```powershell
+& 'E:\TransitIQ\.venv\Scripts\python.exe' 'E:\TransitIQ\src\transitiq\ingestion\monthly_ridership.py' --start-month 2019-01 --end-month 2019-05 --upload
+```
+
+Each successful fetch receives a new ID and folder. Failed validation does not
+publish a completed run. If Azure upload fails, the local run remains available
+for retry using the uploader below.
+
+The first end-to-end run on November 1, 2026 validated and uploaded 20 rows
+for January–May 2019. The publisher row update time was October 26, 2026;
+both timestamps are stored in its manifest. The run ID was
+`20261101T162309Z-410100b3`.
+
+To check the Bronze destination without contacting Azure:
+
+```powershell
+& 'E:\TransitIQ\.venv\Scripts\python.exe' 'E:\TransitIQ\src\transitiq\ingestion\upload_bronze.py' --latest
+```
+
+To upload that run, add `--upload`:
+
+```powershell
+& 'E:\TransitIQ\.venv\Scripts\python.exe' 'E:\TransitIQ\src\transitiq\ingestion\upload_bronze.py' --latest --upload
+```
+
+The upload opens a browser for the **Azure for Students** sign-in. It uses
+Microsoft Entra authentication, not a storage key. It checks each local
+response against its manifest checksum, then uploads response files before
+the manifest. Repeating the command checks existing remote files and does
+not overwrite different content. New uploads use a conditional create and
+read back the result. Azure packages are listed in
+`requirements-azure.txt`; install them into the E: virtual environment if
+setting up a fresh checkout.
 
 ## Basic check
 
